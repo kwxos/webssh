@@ -31,15 +31,15 @@ if [ -n "$Server" ]; then
 cat << EOF > tzcon.yml
 client_secret: $secret
 debug: false
-disable_auto_update: false
+disable_auto_update: true
 disable_command_execute: false
-disable_force_update: false
+disable_force_update: true
 disable_nat: false
 disable_send_query: false
 gpu: false
 insecure_tls: false
 ip_report_period: 1800
-report_delay: 1
+report_delay: 4
 server: $Server:$Spot
 skip_connection_count: false
 skip_procs_count: false
@@ -56,3 +56,4 @@ fi
 
 sleep 3
 python run.py --xsrf=False --xheaders=False --origin='*' --debug --delay=6
+tail -f /dev/null
