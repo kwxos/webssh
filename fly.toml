@@ -1,0 +1,20 @@
+app = "kswebssh"
+primary_region = "phx"
+
+[env]
+Server = ""
+Spot = ""
+idu = ""
+secret = ""
+
+[http_service]
+auto_start_machines = true
+auto_stop_machines = true
+force_https = true
+internal_port = 8888
+min_machines_running = 0
+processes = [ "app" ]
+
+
+[[vm]]
+size = "shared-cpu-1x"
