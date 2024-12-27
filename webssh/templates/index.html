@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title> WebSSH </title>
+    <link href="static/img/favicon.png" rel="icon" type="image/png">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="static/css/xterm.min.css" rel="stylesheet" type="text/css"/>
+    <link href="static/css/fullscreen.min.css" rel="stylesheet" type="text/css"/>
+    <style>
+      body {
+        background-color: #f4f7fc;
+        color: #333;
+      }
+
+      .row {
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin-top: 40px;
+      }
+
+      .form-container {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-container label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .form-container input {
+        border-radius: 5px;
+        box-shadow: none;
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+      }
+
+      .input-group .form-control {
+        flex: 1;
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      .input-group .btn {
+        border-radius: 5px;
+        padding: 6.5px;
+        font-size: 14px;
+      }
+
+      .input-group .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .input-group .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 5px;
+        box-shadow: none;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+      }
+
+      .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+      }
+      {% if font.family %}
+      @font-face {
+        font-family: '{{ font.family }}';
+        src: url('{{ font.url }}');
+      }
+
+      body {
+        font-family: '{{ font.family }}' !important;
+        src: url('{{ font.url }}') !important;
+      }
+      {% end %}
+</style>
+</head>
+<body>
+  <div id="waiter" style="display: none">正在连接 ...</div>
+
+  <div class="container form-container" style="display: none">
+    <form id="connect" action="" method="post" enctype="multipart/form-data" {% if debug %} novalidate{% end %}>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="hostname">主机名</label>
+          <input class="form-control" type="text" id="hostname" name="hostname" placeholder="请输入主机名" required>
+        </div>
+        <div class="col-md-6">
+          <label for="port">端口</label>
+          <input class="form-control" type="number" id="port" name="port" placeholder="22" value="22" min="1" max="65535">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="username">用户名</label>
+          <input class="form-control" type="text" id="username" name="username" placeholder="请输入用户名" required>
+        </div>
+        <div class="col-md-6">
+          <label for="password">密码</label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="请输入密码">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="privatekey">私钥文件</label>
+          <div class="input-group">
+              <input class="form-control" type="file" id="privatekey" name="privatekey" placeholder="选择私钥文件" style="padding: 3px; border-radius: 5px;">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="passphrase">私钥密码</label>
+          <input class="form-control" type="password" id="passphrase" name="passphrase" placeholder="请输入私钥密码">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="totp">TOTP（时间一性验证码）</label>
+          <input class="form-control" type="password" id="totp" name="totp" placeholder="请输入TOTP">
+        </div>
+        <div class="col-md-6">
+          <label for="initcmd">初始化命令（登录后执行的命令）</label>
+          <input class="form-control" type="text" id="initcmd" name="initcmd" placeholder="可选的初始化命令">
+        </div>
+      </div>
+      <input type="hidden" id="term" name="term" value="xterm-256color">
+      {% module xsrf_form_html() %}
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">连接</button>
+        <button type="reset" class="btn btn-danger">重置</button>
+        <button type="button" class="btn btn-info" id="sshlinkBtn">SSH 链接</button>
+      </div>
+      <div id="sshlink"></div>
+      <div class="mt-3">Github: <a href="https://github.com/crazypeace/huashengdun-webssh" target="_blank">https://github.com/crazypeace/huashengdun-webssh</a></div>
+      <div class="mt-1">自建教程: <a href="https://zelikk.blogspot.com/search/label/webssh" target="_blank">https://zelikk.blogspot.com/search/label/webssh</a></div>
+    </form>
+  </div>
+
+  <div class="container">
+    <div id="status"></div>
+    <div id="terminal"></div>
+  </div>
+
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/popper.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/xterm.min.js"></script>
+    <script src="static/js/xterm-addon-fit.min.js"></script>
+    <script src="static/js/main.js"></script>
+  </body>
+</html>
