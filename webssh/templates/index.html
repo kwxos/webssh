@@ -11,65 +11,35 @@
       body {
         background-color: #f4f7fc;
         color: #333;
-        font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-        transition: all 0.3s ease;
       }
-
-      {% if font.family %}
-      /* 自定义字体 */
-      @font-face {
-        font-family: '{{ font.family }}';
-        src: url('{{ font.url }}');
-        font-display: swap;
-      }
-
-      body {
-        font-family: '{{ font.family }}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      }
-      {% end %}
 
       .row {
-        margin-top: 18px;
-        margin-bottom: 15px;
+        margin-top: 15px;
+        margin-bottom: 10px;
       }
 
       .container {
-        max-width: 950px;
+        max-width: 900px;
         margin-top: 40px;
-        transition: all 0.3s ease;
       }
 
       .form-container {
         background: #fff;
-        border-radius: 12px;
-        padding: 25px 30px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-      }
-
-      .form-container:hover {
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
 
       .form-container label {
-        font-weight: 600;
-        color: #4a5568;
-        margin-bottom: 6px;
-        font-size: 0.95rem;
+        font-weight: bold;
+        color: #555;
       }
 
       .form-container input {
-        border-radius: 8px;
+        border-radius: 5px;
         box-shadow: none;
         font-size: 14px;
-        padding: 12px;
-        border: 1px solid #e2e8f0;
-        transition: all 0.2s ease;
-      }
-
-      .form-container input:focus {
-        border-color: #4299e1;
-        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        padding: 10px;
       }
 
       .input-group {
@@ -79,181 +49,131 @@
 
       .input-group .form-control {
         flex: 1;
-        border-radius: 8px;
-        padding: 12px;
+        border-radius: 5px;
+        padding: 10px;
       }
 
       .input-group .btn {
-        border-radius: 8px;
-        padding: 8px;
+        border-radius: 5px;
+        padding: 6.5px;
         font-size: 14px;
+      }
+
+      .input-group .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .input-group .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
       }
 
       .btn {
         padding: 12px 20px;
         font-size: 14px;
-        border-radius: 8px;
+        border-radius: 5px;
         box-shadow: none;
-        font-weight: 500;
-        transition: all 0.2s ease;
       }
 
       .btn-primary {
-        background-color: #4299e1;
-        border-color: #4299e1;
-      }
-
-      .btn-primary:hover {
-        background-color: #3182ce;
-        border-color: #3182ce;
-        transform: translateY(-1px);
+        background-color: #007bff;
+        border-color: #007bff;
       }
 
       .btn-danger {
-        background-color: #f56565;
-        border-color: #f56565;
-      }
-
-      .btn-danger:hover {
-        background-color: #e53e3e;
-        border-color: #e53e3e;
-        transform: translateY(-1px);
+        background-color: #dc3545;
+        border-color: #dc3545;
       }
 
       .btn-info {
-        background-color: #38b2ac;
-        border-color: #38b2ac;
-      }
-
-      .btn-info:hover {
-        background-color: #319795;
-        border-color: #319795;
-        transform: translateY(-1px);
+        background-color: #17a2b8;
+        border-color: #17a2b8;
       }
 
       .btn:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      #waiter {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 8px;
-        font-size: 16px;
-        z-index: 1000;
-      }
-
-      #sshlink {
-        margin-top: 15px;
-        padding: 10px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        display: none;
-      }
-
-      .footer-links {
-        margin-top: 20px;
-        padding-top: 15px;
-        border-top: 1px solid #e2e8f0;
-      }
-
-      .footer-links a {
-        color: #4299e1;
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-
-      .footer-links a:hover {
-        color: #3182ce;
-        text-decoration: underline;
-      }
-
-      #terminal {
-        border-radius: 8px;
-        overflow: hidden;
-        margin-top: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0.9;
       }
     </style>
-  </head>
-  <body>
-    <div id="waiter" style="display: none">正在连接 ...</div>
 
-    <div class="container form-container" style="display: none">
-      <h3 class="text-center mb-4">WebSSH 终端连接</h3>
-      <form id="connect" action="" method="post" enctype="multipart/form-data" {% if debug %} novalidate{% end %}>
-        <div class="row">
-          <div class="col-md-6">
-            <label for="hostname">主机名</label>
-            <input class="form-control" type="text" id="hostname" name="hostname" placeholder="请输入主机名" required>
-          </div>
-          <div class="col-md-6">
-            <label for="port">端口</label>
-            <input class="form-control" type="number" id="port" name="port" placeholder="22" value="22" min="1" max="65535">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <label for="username">用户名</label>
-            <input class="form-control" type="text" id="username" name="username" placeholder="请输入用户名" required>
-          </div>
-          <div class="col-md-6">
-            <label for="password">密码</label>
-            <input class="form-control" type="password" id="password" name="password" placeholder="请输入密码">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <label for="privatekey">私钥文件</label>
-            <div class="input-group">
-              <input class="form-control" type="file" id="privatekey" name="privatekey" placeholder="选择私钥文件" style="padding: 8px; border-radius: 8px;">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label for="passphrase">私钥密码</label>
-            <input class="form-control" type="password" id="passphrase" name="passphrase" placeholder="请输入私钥密码">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <label for="totp">TOTP（时间一性验证码）</label>
-            <input class="form-control" type="password" id="totp" name="totp" placeholder="请输入TOTP">
-          </div>
-          <div class="col-md-6">
-            <label for="initcmd">初始化命令</label>
-            <input class="form-control" type="text" id="initcmd" name="initcmd" placeholder="登录后执行的命令">
-          </div>
-        </div>
-        <input type="hidden" id="term" name="term" value="xterm-256color">
-        {% module xsrf_form_html() %}
-        <div class="d-flex justify-content-between mt-4">
-          <button type="submit" class="btn btn-primary">连接</button>
-          <button type="reset" class="btn btn-danger">重置</button>
-          <button type="button" class="btn btn-info" id="sshlinkBtn">SSH 链接</button>
-        </div>
-        <div id="sshlink"></div>
-        <div class="footer-links">
-          <div class="row">
-            <div class="col-md-6">
-              <i class="fa fa-github"></i> Github: <a href="https://github.com/crazypeace/huashengdun-webssh" target="_blank">huashengdun-webssh</a>
-            </div>
-            <div class="col-md-6">
-              <i class="fa fa-book"></i> 自建教程: <a href="https://zelikk.blogspot.com/search/label/webssh" target="_blank">zelikk.blogspot.com</a>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+    {% if font.family %}
+    <style>
+      @font-face {
+        font-family: '{{ font.family }}';
+        src: url('{{ font.url }}');
+      }
 
-    <div class="container">
-      <div id="status"></div>
-      <div id="terminal"></div>
-    </div>
+      body {
+        font-family: '{{ font.family }}' !important;
+        src: url('{{ font.url }}') !important;
+      }
+    </style>
+    {% end %}
+</head>
+<body>
+  <div id="waiter" style="display: none">正在连接 ...</div>
+
+  <div class="container form-container" style="display: none">
+    <form id="connect" action="" method="post" enctype="multipart/form-data" {% if debug %} novalidate{% end %}>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="hostname">主机名</label>
+          <input class="form-control" type="text" id="hostname" name="hostname" placeholder="请输入主机名" required>
+        </div>
+        <div class="col-md-6">
+          <label for="port">端口</label>
+          <input class="form-control" type="number" id="port" name="port" placeholder="22" value="22" min="1" max="65535">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="username">用户名</label>
+          <input class="form-control" type="text" id="username" name="username" placeholder="请输入用户名" required>
+        </div>
+        <div class="col-md-6">
+          <label for="password">密码</label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="请输入密码">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="privatekey">私钥文件</label>
+          <div class="input-group">
+              <input class="form-control" type="file" id="privatekey" name="privatekey" placeholder="选择私钥文件" style="padding: 3px; border-radius: 5px;">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="passphrase">私钥密码</label>
+          <input class="form-control" type="password" id="passphrase" name="passphrase" placeholder="请输入私钥密码">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="totp">TOTP（时间一性验证码）</label>
+          <input class="form-control" type="password" id="totp" name="totp" placeholder="请输入TOTP">
+        </div>
+        <div class="col-md-6">
+          <label for="initcmd">初始化命令（登录后执行的命令）</label>
+          <input class="form-control" type="text" id="initcmd" name="initcmd" placeholder="可选的初始化命令">
+        </div>
+      </div>
+      <input type="hidden" id="term" name="term" value="xterm-256color">
+      {% module xsrf_form_html() %}
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">连接</button>
+        <button type="reset" class="btn btn-danger">重置</button>
+        <button type="button" class="btn btn-info" id="sshlinkBtn">SSH 链接</button>
+      </div>
+      <div id="sshlink"></div>
+      <div class="mt-3">Github: <a href="https://github.com/crazypeace/huashengdun-webssh" target="_blank">https://github.com/crazypeace/huashengdun-webssh</a></div>
+      <div class="mt-1">自建教程: <a href="https://zelikk.blogspot.com/search/label/webssh" target="_blank">https://zelikk.blogspot.com/search/label/webssh</a></div>
+    </form>
+  </div>
+
+  <div class="container">
+    <div id="status"></div>
+    <div id="terminal"></div>
+  </div>
 
     <script src="static/js/jquery.min.js"></script>
     <script src="static/js/popper.min.js"></script>
@@ -261,21 +181,5 @@
     <script src="static/js/xterm.min.js"></script>
     <script src="static/js/xterm-addon-fit.min.js"></script>
     <script src="static/js/main.js"></script>
-    <script>
-      $(document).ready(function() {
-        // 平滑显示表单容器
-        $(".form-container").fadeIn(500);
-        
-        // SSH链接按钮点击事件 - 只是示例，您可能需要根据实际逻辑调整
-        $("#sshlinkBtn").click(function() {
-          if($("#hostname").val() && $("#username").val()) {
-            var sshLink = "ssh://" + $("#username").val() + "@" + $("#hostname").val() + ":" + $("#port").val();
-            $("#sshlink").html("<code>" + sshLink + "</code>").slideDown();
-          } else {
-            $("#sshlink").html("<span class='text-danger'>请至少填写主机名和用户名</span>").slideDown();
-          }
-        });
-      });
-    </script>
   </body>
 </html>
